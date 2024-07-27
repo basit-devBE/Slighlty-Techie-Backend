@@ -21,7 +21,6 @@ if(fs.existsSync(crimsonPath)){
     console.log('Folders created');
 }
 
-// Delete the 'path/fs' folder
 if (fs.existsSync(fsPath)) {
     fs.rmdirSync(fsPath, { recursive: true });
     console.log('Deleted folder path/fs.');
@@ -29,11 +28,9 @@ if (fs.existsSync(fsPath)) {
     console.log('Folder path/fs does not exist.');
 }
 
-// View contents of 'crimson' folder
 const crimsonContents = fs.readdirSync(crimsonPath);
 console.log('Contents of crimson folder:', crimsonContents);
 
-// Create files in the 'crimson' folder
 const files = ['index.js', 'index.txt', 'index.md'];
 files.forEach(file => {
     const filePath = path.join(crimsonPath, file);
@@ -41,14 +38,12 @@ files.forEach(file => {
     console.log(`Created file: ${filePath}`);
 });
 
-// Append new data/content to the files
 files.forEach(file => {
     const filePath = path.join(crimsonPath, file);
     fs.appendFileSync(filePath, `\nAppended content to ${file}.`);
     console.log(`Appended content to file: ${filePath}`);
 });
 
-// Read from the files created above
 files.forEach(file => {
     const filePath = path.join(crimsonPath, file);
     const content = fs.readFileSync(filePath, 'utf8');

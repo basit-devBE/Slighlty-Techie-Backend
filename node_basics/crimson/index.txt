@@ -1,0 +1,2 @@
+This is the initial content of index.txt.
+Appended content to index.txt.

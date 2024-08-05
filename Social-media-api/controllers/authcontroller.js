@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const User = require("../models/userModel.js")
 const bcrypt = require('bcrypt');
 const generateToken = require('../utils/generateToken.js');
+const expressAsyncHandler = require('express-async-handler');
 
 exports.register = async (req, res, next) => {
     const { username, email, password, fullname } = req.body;
@@ -70,11 +71,31 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 		const token = generateToken(user.id)
 
-		res.status(200).json({ msg: "Logged in", token })
+        res.status(200).json({ msg: "Logged in", token, userID:user.id})
 	} catch (error) {
 		next(error)
 		
 	}
+})
+
+exports.Update = expressAsyncHandler(async (req,res,next) => {
+    // const {id} = req.params.id
+    try{
+        const user = await User.findById(req.params.id)
+        if(!user){
+            return res.status(404).json({error: "User not found"})
+        }
+        if(user){
+            const { username, email, fullname} = req.body
+            user.username = username || user.username
+            user.email = email || user.email
+            user.fullname = fullname || user.fullname
+            const updatedUser = await user.save()
+            res.status(200).json({message: "User updated successfully", updatedUser})
+        }
+    }catch(error){
+        next(error)
+    }
 })
 
 exports.fetchUsers = asyncHandler(async (req, res) => {

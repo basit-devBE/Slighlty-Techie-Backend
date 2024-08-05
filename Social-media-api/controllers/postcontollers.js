@@ -17,3 +17,16 @@ exports.createPost = expressAsyncHandler(async (req, res,next) => {
         next(error)
     }
 });
+
+exports.allPost = expressAsyncHandler(async(req,res,next)=> {
+    try{
+        const posts = await Post.find()
+        return res.json({
+            status: 200,
+            message: "All posts",
+            posts
+        })
+    }catch(error){
+        next(error)
+    }
+})

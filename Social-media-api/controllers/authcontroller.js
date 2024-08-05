@@ -44,28 +44,40 @@ exports.register = async (req, res, next) => {
 };
 
 
-exports.login = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
+exports.login = asyncHandler(async (req, res, next) => {
+	try {
+		// validate inputs
+		const { username, email, password } = req.body
 
-        if (!email || !password) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
+		if ((!username && !email) || !password) {
+			return res.status(400).json({ error: "Please enter username or email" })
+		}
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ error: "User not found" });
-        }
+		const user = await User.findOne({ $or: [{ username }, { email }] }).select(
+			"password"
+		)
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ error: "Invalid credentials" });
-        }
-        const token = generateToken(user.id)
+		if (!user) {
+			return res.status(400).json({ error: "User not found" })
+		}
 
-        res.status(200).json({ message: "User logged in successfully" ,token});
+		// compare password
+		const isMatch = await bcrypt.compare(password, user.password)
 
-    } catch (error) {
-        next(error);
-    }
-};
+		if (!isMatch) {
+			return res.status(400).json({ error: "Invalid credentials" })
+		}
+
+		const token = generateToken(user.id)
+
+		res.status(200).json({ msg: "Logged in", token })
+	} catch (error) {
+		next(error)
+		
+	}
+})
+
+exports.fetchUsers = asyncHandler(async (req, res) => {
+	const users = await User.find()
+	res.status(200).json({ users })
+})

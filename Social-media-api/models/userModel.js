@@ -29,7 +29,7 @@ const userSchema = new Schema(
 			required: true,
 			trim: true,
 			minLength: [8, "Please password length should not be less than 7"],
-			select: false
+			// select: false
 		},
 		bio: {
 			type: String,
@@ -84,6 +84,7 @@ const userSchema = new Schema(
 				default: [],
 			},
 		],
+		tokens: []
 	},
 	{ timestamps: true }
 )

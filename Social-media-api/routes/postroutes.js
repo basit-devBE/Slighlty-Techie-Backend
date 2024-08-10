@@ -1,10 +1,24 @@
-const express = require("express");
-const requireSign = require("../middlewares/authMiddlewares");
-const { createPost, allPost } = require("../controllers/postcontollers");
+const express = require("express")
+const {
+	createPost,
+	fetchPosts,
+	viewPost,
+	deletePost,
+	comment,
+	unlikeLike,
+	fetchUserPosts,
+	fetchPostsUserHasLiked,
+} = require("../controllers/postcontroller")
+const requireSign = require("../middlewares/authMiddleware")
+const postRouter = express.Router()
 
-const createpostrouter = express.Router();
+postRouter.post("/create", requireSign, createPost)
+postRouter.get("/", requireSign, fetchPosts)
+postRouter.get("/:id", requireSign, viewPost)
+postRouter.delete("/:id", requireSign, deletePost)
+postRouter.put("/comment/:postId", requireSign, comment)
+postRouter.put("/likes/:postId", requireSign, unlikeLike)
+postRouter.get("/user-posts", requireSign, fetchUserPosts)
+postRouter.get("/user-liked-posts", requireSign, fetchPostsUserHasLiked)
 
-createpostrouter.post("/create", requireSign,createPost)
-createpostrouter.get("/allposts", requireSign,allPost)
-
-module.exports = createpostrouter;
+module.exports = postRouter
